@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>معرض سيارات | الصفحة الرئيسية</title>
+  <meta name="description" content="معرض سيارات احترافي — صفحة رئيسية مع روابط للإنستغرام ورقم الهاتف بالإضافة لقسم تعريف." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F5F7FA; --bg-soft:#F9FAFB; --card:#FFFFFF; --border:#E5E7EB; --ink:#1F2937; --heading:#111827; --accent:#2563EB; --accent-2:#3B82F6; --muted:#6B7280; --focus:#2563EB; --radius:14px; --shadow-1:0 6px 16px rgba(0,0,0,.06); --shadow-2:0 16px 32px rgba(0,0,0,.10); --container:1150px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+    a{text-decoration:none;color:inherit}
+    img{max-width:100%;display:block}
+    :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+    .container{width:min(var(--container),92%);margin-inline:auto}
+
+    header.site{position:sticky;top:0;z-index:50;background:rgba(249,250,251,.92);backdrop-filter:saturate(140%) blur(6px);border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0}
+    .brand{display:flex;align-items:center;gap:.7rem;font-weight:800;color:var(--heading)}
+    .brand-mark{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;box-shadow:var(--shadow-1);font-weight:900}
+    nav ul{margin:0;padding:0;list-style:none;display:flex;align-items:center;gap:.7rem}
+    nav a{padding:.55rem .75rem;border-radius:10px;font-weight:700}
+    nav a:hover,nav a:focus-visible{background:#fff;box-shadow:var(--shadow-1)}
+
+    .top-contacts{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;color:var(--heading)}
+    .chip{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .55rem;font-size:.82rem;border-radius:999px;background:#fff;border:1px solid var(--border)}
+
+    .hero{position:relative;min-height:60vh;display:grid;align-items:center;background:linear-gradient(to bottom, rgba(37,99,235,.15), rgba(59,130,246,.18)), url('https://images.unsplash.com/photo-1511919884226-fd3cad34687c?q=80&w=1800&auto=format&fit=crop') center/cover no-repeat;border-bottom:1px solid var(--border)}
+    .hero .content{padding:3rem 0}
+    .hero h1{margin:0 0 .6rem;font-size:clamp(1.6rem,5vw,2.6rem);color:var(--heading);line-height:1.2}
+    .hero p{margin:0 0 1rem;color:#3d332d;font-size:1.05rem}
+    .cta{display:flex;gap:.7rem;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.8rem 1.1rem;border-radius:12px;border:1px solid var(--border);background:#fff;color:var(--ink);font-weight:700;cursor:pointer;transition:transform .08s ease,filter .2s ease,box-shadow .2s ease}
+    .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));border-color:#93C5FD;color:#fff}
+
+    .section{padding:1.6rem 0}
+    h2{color:var(--heading)}
+    .lead{color:var(--muted)}
+
+    /* بطاقات سيارات مثل صفحة cars */
+    .grid-cards{display:grid;grid-template-columns:1fr;gap:1rem}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-1);display:flex;flex-direction:column}
+    .card .media{position:relative;aspect-ratio:16/10;overflow:hidden;background:#fff}
+    .card .media img{width:100%;height:100%;object-fit:cover}
+    .card .body{padding:.8rem;display:grid;gap:.45rem}
+    .card .title-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+    .price{font-weight:800;color:var(--heading)}
+    .tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.15rem}
+    .card h3{margin:0}
+    .card .body > div{color:var(--muted)}
+    .card[tabindex]{cursor:pointer}
+    .card:hover,.card:focus-visible{box-shadow:var(--shadow-2);transform:translateY(-2px);transition:transform .12s ease}
+
+    /* أنماط المودال والقاروسيل والمواصفات مثل صفحة cars */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;place-items:center;padding:1rem}
+    .modal-backdrop[open]{display:grid}
+    .dialog{width:min(640px,96%);background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-2)}
+    .dialog header{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.7rem 1rem;background:var(--bg-soft);border-bottom:1px solid var(--border)}
+    .dialog .content{padding:1rem;display:grid;gap:.8rem}
+
+    /* عرض معلومات فقط: إخفاء الأزرار داخل المودال */
+    #callNow,#openInstagram,#modalStatus{display:none !important}
+
+    /* مواصفات منظمة مثل cars */
+    .specs{display:grid;gap:.5rem;grid-template-columns:repeat(2,1fr)}
+    .specs .row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.5rem .7rem;background:#fff;border:1px solid var(--border);border-radius:10px;font-size:.95rem}
+    @media (min-width: 720px){ .specs{grid-template-columns:repeat(3,1fr)} }
+
+    .carousel{position:relative;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff}
+    .carousel .frame{aspect-ratio:16/9;display:grid;place-items:center}
+    .carousel img{width:100%;height:100%;object-fit:cover}
+    .carousel .ctrl{position:absolute;top:50%;transform:translateY(-50%);background:#ffffffcc;border:1px solid var(--border);padding:.35rem .6rem;border-radius:10px;cursor:pointer;font-weight:800;color:var(--ink)}
+    .carousel .prev{inset-inline-start:.5rem}
+    .carousel .next{inset-inline-end:.5rem}
+
+    .specs{display:grid;gap:.5rem;grid-template-columns:repeat(2,1fr)}
+    .specs .row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.5rem .7rem;background:#fff;border:1px solid var(--border);border-radius:10px;font-size:.95rem}
+    @media (min-width: 720px){
+      .specs{grid-template-columns:repeat(3,1fr)}
+    }
+
+    @media (min-width:640px){.grid-cards{grid-template-columns:repeat(2,1fr)}}
+    @media (min-width:960px){.grid-cards{grid-template-columns:repeat(3,1fr)}}
+
+    footer{background:#0F172A;color:#E5E7EB;padding:1rem 0;margin-top:1rem;border-top:1px solid var(--border)}
+  </style>
+</head>
+<body>
+  <header class="site" role="banner">
+    <div class="container nav" aria-label="شريط التنقل">
+      <a class="brand" href="#" aria-label="الصفحة الرئيسية">
+        <span class="brand-mark" aria-hidden="true">🚗</span>
+        <span>معرض السيارات</span>
+      </a>
+      
+      <div class="top-contacts" aria-label="معلومات التواصل">
+        <a class="chip" href="tel:+962796698998">☎︎ <span dir="ltr">+962 79 669 8998</span></a>
+        <a class="chip" href="https://maps.app.goo.gl/SmuXQ8Ni4unu9T989" target="_blank" rel="noopener">📍 عمّان — شارع السلام، بجانب كاوزاكي</a>
+        <span class="chip" aria-label="أوقات الدوام">⏰ 10:00 صباحاً – 8:00 مساءً</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero" id="home">
+    <div class="container content">
+      <h1>اكتشف سيارتك القادمة مع تجربة شراء موثوقة</h1>
+      <p>مجموعة مختارة بعناية من السيارات المضمونة بأسعار شفافة وخيارات تمويل مرنة.</p>
+      <div class="cta">
+        <a class="btn primary" href="cars.html">عرض السيارات</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- بعض السيارات + زر إظهار الكل -->
+  <section id="featured" class="section" aria-labelledby="featHeading">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:.8rem;flex-wrap:wrap">
+        <h2 id="featHeading" style="margin:0">بعض السيارات</h2>
+        <a class="btn" href="cars.html">إظهار الكل</a>
+      </div>
+      <div id="featGrid" class="grid-cards" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- Modal لتفاصيل السيارة -->
+  <div id="modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+    <div class="dialog">
+      <header>
+        <strong id="modalTitle">تفاصيل السيارة</strong>
+        <button class="btn" id="closeModal" aria-label="إغلاق">✕</button>
+      </header>
+      <div class="content">
+        <div class="carousel" aria-roledescription="carousel">
+          <button class="ctrl prev" id="prevSlide" aria-label="السابق">‹</button>
+          <div class="frame">
+            <img id="carouselImg" alt="صورة سيارة" decoding="async" loading="lazy" />
+          </div>
+          <button class="ctrl next" id="nextSlide" aria-label="التالي">›</button>
+        </div>
+        <div id="modalDesc" class="specs" aria-live="polite"></div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+          <a class="btn primary" id="callNow" href="tel:+962796698998">اتصل الآن</a>
+          <a class="btn" id="openInstagram" href="https://instagram.com/showroom_demo" target="_blank" rel="noopener">رسالة إنستغرام</a>
+          <span id="modalStatus" class="lead" role="status" aria-live="polite"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="about" class="section" aria-labelledby="aboutHeading">
+    <div class="container">
+      <h2 id="aboutHeading">موقع المعرض</h2>
+      <div style="display:flex; gap:.9rem; align-items:flex-start; flex-wrap:wrap">
+        <!-- الخريطة (أصغر قليلاً) -->
+        <div style="border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow: var(--shadow-1); background:#fff; flex:1 1 420px; min-width:280px">
+          <iframe title="خريطة موقع المعرض" aria-label="خريطة موقع المعرض"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2296.2048955260266!2d35.83629844746706!3d31.87108915017005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151ca177ce911ca9%3A0x575c85874bfe63a1!2z2YXYudix2LYg2LnZhNmKINin2YTZgdmC2YrZhyDZhNiq2KzYp9ix2Kkg2KfZhNiz2YrYp9ix2KfYqg!5e0!3m2!1sar!2sjo!4v1758368232921!5m2!1sar!2sjo"
+            style="width:100%; height:300px; border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <!-- المعلومات بجانب الخريطة -->
+        <div style="flex:1 1 320px; min-width:260px">
+          <p class="lead" style="margin-top:0; margin-bottom:.8rem">العنوان: عمّان، الأردن — شارع السلام، بجانب كاوزاكي.</p>
+          <div style="display:flex; gap:.6rem; flex-wrap:wrap;">
+            <a class="chip" href="tel:+962796698998">☎︎ <span dir="ltr">+962 79 669 8998</span></a>
+            <a class="chip" href="https://www.instagram.com/ali.alfaqeeh.motors?igsh=YWtyZnp1NXl1ams2" target="_blank" rel="noopener">Instagram</a>
+            <a class="chip" href="https://maps.app.goo.gl/SmuXQ8Ni4unu9T989" target="_blank" rel="noopener">فتح الخريطة</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer role="contentinfo">
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
+      <div>© <span id="year"></span> معرض السيارات</div>
+      <div style="display:flex;gap:.6rem;align-items:center">
+        <a class="chip" href="tel:+962796698998">☎︎ <span dir="ltr">+962 79 669 8998</span></a>
+        <a class="chip" href="https://instagram.com/showroom_demo" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- تحميل إعدادات Supabase -->
+  <script src="config.js"></script>
+  <!-- مكتبة Supabase (UMD) تضع window.supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <script src="index.js"></script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>لوحة إدارة المعرض</title>
+  <meta name="description" content="لوحة إدارة احترافية لإضافة وتعديل وحذف سيارات مع استيراد/تصدير JSON." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F5F7FA; --bg-soft:#F9FAFB; --card:#FFFFFF; --border:#E5E7EB; --ink:#1F2937; --heading:#111827; --accent:#2563EB; --accent-2:#3B82F6; --muted:#6B7280; --focus:#2563EB; --radius:14px; --shadow-1:0 6px 16px rgba(0,0,0,.06); --shadow-2:0 16px 32px rgba(0,0,0,.10); --container:1180px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+    a{text-decoration:none;color:inherit}
+    :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+    .container{width:min(var(--container),96%);margin-inline:auto}
+
+    header.site{position:sticky;top:0;z-index:50;background:rgba(249,250,251,.92);backdrop-filter:saturate(140%) blur(6px);border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0}
+    .brand{display:flex;align-items:center;gap:.7rem;font-weight:800;color:var(--heading)}
+    .brand-mark{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;box-shadow:var(--shadow-1);font-weight:900}
+
+    .toolbar{display:flex;gap:.6rem;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.6rem .9rem;border-radius:10px;border:1px solid var(--border);background:#fff;color:var(--ink);font-weight:700;cursor:pointer;transition:transform .08s ease,filter .2s ease,box-shadow .2s ease}
+    .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));border-color:#93C5FD;color:#fff}
+    .btn.danger{background:#ef4444;color:#fff;border-color:#ef4444}
+    .btn.soft{background:#f3f4f6}
+
+    .layout{display:grid;grid-template-columns:1.1fr .9fr;gap:1rem;align-items:start;margin:1rem 0}
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-1);overflow:hidden}
+    .panel header{padding:.7rem 1rem;border-bottom:1px solid var(--border);background:var(--bg-soft);display:flex;align-items:center;justify-content:space-between}
+    .panel .content{padding:.8rem}
+
+    .list{display:grid;gap:.5rem}
+    .list-item{display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:center;padding:.55rem .7rem;border:1px solid var(--border);border-radius:10px;background:#fff}
+    .list-item:hover{box-shadow:var(--shadow-1)}
+    .badge{padding:.15rem .5rem;border-radius:999px;background:#eef2ff;color:#1e40af;font-weight:700;font-size:.8rem}
+
+    .filters{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+    .filters input,.filters select{padding:.5rem .7rem;border:1px solid var(--border);border-radius:8px;background:#fff}
+
+    form .row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+    form .row-1{grid-template-columns:1fr}
+    form label{font-weight:600;color:var(--heading);font-size:.9rem}
+    form input, form textarea, form select{width:100%;padding:.55rem .7rem;border:1px solid var(--border);border-radius:8px;background:#fff}
+    form textarea{min-height:90px;resize:vertical}
+
+    .hint{font-size:.8rem;color:var(--muted)}
+
+    @media (max-width:960px){.layout{grid-template-columns:1fr}}
+
+    /* شاشة تسجيل الدخول */
+    .auth{position:fixed;inset:0;background:rgba(15,23,42,.9);display:grid;place-items:center;z-index:100}
+    .auth .card{width:min(420px,92%);background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-2);padding:1rem}
+  </style>
+</head>
+<body>
+  <header class="site" role="banner">
+    <div class="container nav" aria-label="شريط التنقل">
+      <a class="brand" href="index.html" aria-label="العودة للصفحة الرئيسية">
+        <span class="brand-mark" aria-hidden="true">🛠️</span>
+        <span>لوحة إدارة المعرض</span>
+      </a>
+      <div class="toolbar">
+        <button id="btnExport" type="button" class="btn">تصدير JSON</button>
+        <label class="btn soft" for="importFile">استيراد JSON</label>
+        <input id="importFile" type="file" accept="application/json" style="display:none" />
+        <button id="btnNew" type="button" class="btn">سيارة جديدة</button>
+        <button id="btnSaveAll" type="button" class="btn primary">حفظ التغييرات</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="layout">
+      <!-- قائمة السيارات -->
+      <div class="panel" aria-labelledby="listHeading">
+        <header>
+          <strong id="listHeading">القائمة</strong>
+          <span><span id="count" class="badge">0</span></span>
+        </header>
+        <div class="content">
+          <div class="filters" style="margin-bottom:.7rem">
+            <input id="search" type="text" placeholder="ابحث بالاسم أو الوسوم" aria-label="بحث" />
+            <select id="sort">
+              <option value="recent">الأحدث إضافة</option>
+              <option value="price-asc">السعر: من الأرخص للأغلى</option>
+              <option value="price-desc">السعر: من الأغلى للأرخص</option>
+              <option value="year-desc">الموديل: من الأحدث للأقدم</option>
+              <option value="year-asc">الموديل: من الأقدم للأحدث</option>
+            </select>
+            <button id="btnResetFilters" class="btn soft">إعادة تعيين</button>
+          </div>
+          <div id="list" class="list" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <!-- نموذج التفاصيل -->
+      <div class="panel" aria-labelledby="formHeading">
+        <header>
+          <strong id="formHeading">تفاصيل السيارة</strong>
+          <span class="hint" id="formStatus"></span>
+        </header>
+        <div class="content">
+          <form id="carForm">
+            <div class="row">
+              <div>
+                <label for="make">الشركة</label>
+                <input id="make" required />
+              </div>
+              <div>
+                <label for="model">الطراز</label>
+                <input id="model" required />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="year">الموديل (سنة)</label>
+                <input id="year" type="number" min="1990" max="2099" required />
+              </div>
+              <div>
+                <label for="price">السعر (دينار)</label>
+                <input id="price" type="number" min="0" step="100" required />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="mileage">المشَى (كم)</label>
+                <input id="mileage" type="number" min="0" step="100" required />
+              </div>
+              <div>
+                <label for="seats">عدد المقاعد</label>
+                <input id="seats" type="number" min="1" max="9" required />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="transmission">ناقل الحركة</label>
+                <select id="transmission">
+                  <option value="أوتوماتيك">أوتوماتيك</option>
+                  <option value="عادي">عادي</option>
+                </select>
+              </div>
+              <div>
+                <label for="fuel">الوقود</label>
+                <select id="fuel">
+                  <option value="بنزين">بنزين</option>
+                  <option value="ديزل">ديزل</option>
+                  <option value="كهرباء">كهرباء</option>
+                  <option value="هايبرد">هايبرد</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row-1 row">
+              <div>
+                <label for="images">روابط الصور (سطر لكل رابط)</label>
+                <textarea id="images" placeholder="https://...\nhttps://..." ></textarea>
+                <div class="hint">يتم عرض أول صورة كصورة رئيسية.</div>
+                <div style="margin-top:.5rem">
+                  <label class="btn soft" for="imageFiles">رفع صور من جهازك</label>
+                  <input id="imageFiles" type="file" accept="image/*" multiple style="display:none" />
+                  <span class="hint">سيتم رفع الصور وتعبئة الروابط تلقائياً.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="row-1 row">
+              <div>
+                <label for="tags">الوسوم (مفصولة بفواصل)</label>
+                <input id="tags" placeholder="اقتصادية, عائلية, ..." />
+              </div>
+            </div>
+
+            <div class="row-1 row">
+              <div>
+                <label for="description">الوصف</label>
+                <textarea id="description" placeholder="وصف مختصر..." ></textarea>
+              </div>
+            </div>
+
+            <div class="row-1 row">
+              <div class="hint">المعرّف يُولد تلقائياً بالصيغة: make-model-year (يمكن تعديله تلقائياً عند الحفظ).</div>
+            </div>
+
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+              <button type="submit" class="btn primary">حفظ السيارة</button>
+              <button type="button" id="btnDelete" class="btn danger">حذف</button>
+              <button type="button" id="btnResetForm" class="btn soft">تفريغ النموذج</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- شاشة دخول بكلمة مرور بسيطة -->
+  <div id="auth" class="auth" aria-hidden="true">
+    <div class="card">
+      <h2 style="margin-top:0">تسجيل الدخول</h2>
+      <p class="hint" style="margin:.2rem 0 .8rem">أدخل كلمة المرور للوصول للوحة الإدارة.</p>
+      <input id="authPass" type="password" placeholder="كلمة المرور" style="width:100%;padding:.6rem .7rem;border:1px solid var(--border);border-radius:8px" />
+      <div id="authError" class="hint" style="color:#b91c1c;margin-top:.4rem;display:none">كلمة المرور غير صحيحة</div>
+      <div style="display:flex;gap:.6rem;margin-top:.8rem;justify-content:flex-end">
+        <button id="authSubmit" class="btn primary">دخول</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- تحميل إعدادات Supabase (انسخ config.example.js إلى config.js وضع مفاتيحك) -->
+  <script src="config.js"></script>
+  <!-- مكتبة Supabase (UMD) تضع window.supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  
+  <script src="admin.js"></script>
+</body>
+</html>

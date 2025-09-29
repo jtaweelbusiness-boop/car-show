@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>معرض سيارات | الصفحة الرئيسية</title>
+  <meta name="description" content="معرض سيارات احترافي — صفحة رئيسية مع روابط للإنستغرام ورقم الهاتف بالإضافة لقسم تعريف." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F5F7FA;
+      --bg-soft: #F9FAFB;
+      --card: #FFFFFF;
+      --border: #E5E7EB;
+      --ink: #1F2937;
+      --heading: #111827;
+      --accent: #2563EB;
+      --accent-2: #3B82F6;
+      --muted: #6B7280;
+      --focus: #2563EB;
+      --radius: 14px;
+      --shadow-1: 0 6px 16px rgba(0,0,0,0.06);
+      --shadow-2: 0 16px 32px rgba(0,0,0,0.10);
+      --container: 1150px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+    a{text-decoration:none;color:inherit}
+    img{max-width:100%;display:block}
+    :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+    .container{width:min(var(--container),92%);margin-inline:auto}
+
+    header.site{position:sticky;top:0;z-index:50;background:rgba(249,250,251,.92);backdrop-filter:saturate(140%) blur(6px);border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0}
+    .brand{display:flex;align-items:center;gap:.7rem;font-weight:800;color:var(--heading)}
+    .brand-mark{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;box-shadow:var(--shadow-1);font-weight:900}
+    nav ul{margin:0;padding:0;list-style:none;display:flex;align-items:center;gap:.7rem}
+    nav a{padding:.55rem .75rem;border-radius:10px;font-weight:700}
+    nav a:hover,nav a:focus-visible{background:#fff;box-shadow:var(--shadow-1)}
+
+    .top-contacts{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;color:var(--heading)}
+    .chip{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .55rem;font-size:.82rem;border-radius:999px;background:#fff;border:1px solid var(--border)}
+
+    .section{padding:1.4rem 0}
+    h1,h2{color:var(--heading)}
+    .lead{color:var(--muted)}
+
+    .grid-cards{display:grid;grid-template-columns:1fr;gap:1rem}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-1);display:flex;flex-direction:column}
+    .card .media{position:relative;aspect-ratio:16/10;overflow:hidden;background:#fff}
+    .card .media img{width:100%;height:100%;object-fit:cover}
+    .card .body{padding:.8rem;display:grid;gap:.45rem}
+    .card .title-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+    .price{font-weight:800;color:var(--heading)}
+    .tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.15rem}
+    .card[tabindex]{cursor:pointer}
+    .card:hover,.card:focus-visible{box-shadow:var(--shadow-2);transform:translateY(-2px);transition:transform .12s ease}
+
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;place-items:center;padding:1rem}
+    .modal-backdrop[open]{display:grid}
+    .dialog{width:min(640px,96%);background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-2)}
+    .dialog header{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.7rem 1rem;background:var(--bg-soft);border-bottom:1px solid var(--border)}
+    .dialog .content{padding:1rem;display:grid;gap:.8rem}
+    
+    /* عرض معلومات فقط: إخفاء الأزرار، وتصغير الخطوط (مع إبقاء الصور) */
+    #callNow,#openInstagram,#modalStatus{display:none !important}
+    .specs{grid-template-columns:repeat(2,1fr);gap:.35rem}
+    .specs .row{padding:.35rem .5rem;font-size:.9rem}
+    .dialog header{padding:.5rem .8rem}
+
+    .carousel{position:relative;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff}
+    .carousel .frame{aspect-ratio:16/9;display:grid;place-items:center}
+    .carousel img{width:100%;height:100%;object-fit:cover}
+    .carousel .ctrl{position:absolute;top:50%;transform:translateY(-50%);background:#ffffffcc;border:1px solid var(--border);padding:.35rem .6rem;border-radius:10px;cursor:pointer;font-weight:800;color:var(--ink)}
+    .carousel .prev{inset-inline-start:.5rem}
+    .carousel .next{inset-inline-end:.5rem}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.8rem 1.1rem;border-radius:12px;border:1px solid var(--border);background:#fff;color:var(--ink);font-weight:700;cursor:pointer;transition:transform .08s ease,filter .2s ease,box-shadow .2s ease}
+    .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));border-color:#93C5FD;color:#fff}
+
+    .specs{display:grid;gap:.5rem;grid-template-columns:repeat(2,1fr)}
+    .specs .row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.5rem .7rem;background:#fff;border:1px solid var(--border);border-radius:10px;font-size:.95rem}
+    @media (min-width: 720px){
+      .specs{grid-template-columns:repeat(3,1fr)}
+    }
+
+    footer{background:#0F172A;color:#E5E7EB;padding:1rem 0;margin-top:1rem;border-top:1px solid var(--border)}
+
+    /* أنماط الفلاتر والبحث */
+    #searchInput:focus{outline:3px solid var(--focus);outline-offset:2px;border-color:var(--accent)}
+    #searchInput::placeholder{color:var(--muted);opacity:.7}
+    #yearFilter:focus{outline:3px solid var(--focus);outline-offset:2px;border-color:var(--accent)}
+    #resetFilters:hover{transform:translateY(-1px);box-shadow:var(--shadow-1);background:var(--accent-2)}
+    #resetFilters:active{transform:translateY(0);background:var(--accent)}
+    #filterResults{font-weight:600;transition:color .2s ease}
+
+    /* أنماط Slider السعر */
+    #priceSlider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid #fff;
+      box-shadow: var(--shadow-1);
+      transition: transform .1s ease;
+    }
+
+    #priceSlider::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+      background: var(--accent-2);
+    }
+
+    #priceSlider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid #fff;
+      box-shadow: var(--shadow-1);
+    }
+
+    #priceSlider::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--slider-percent, 100%), var(--border) var(--slider-percent, 100%), var(--border) 100%);
+      border: none;
+    }
+
+    #priceSlider::-moz-range-track {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: linear-gradient(to right, var(--accent) 0%, var(--accent) var(--slider-percent, 100%), var(--border) var(--slider-percent, 100%), var(--border) 100%);
+      border: none;
+    }
+
+    @media (min-width:640px){.grid-cards{grid-template-columns:repeat(2,1fr)}}
+    @media (min-width:960px){.grid-cards{grid-template-columns:repeat(3,1fr)}}
+  </style>
+</head>
+<body>
+  <header class="site" role="banner">
+    <div class="container nav" aria-label="شريط التنقل">
+      <a class="brand" href="index.html" aria-label="العودة للصفحة الرئيسية">
+        <span class="brand-mark" aria-hidden="true">🚗</span>
+        <span>معرض السيارات</span>
+      </a>
+      
+      
+      <div class="top-contacts" aria-label="معلومات التواصل">
+        <a class="chip" href="tel:+962796698998">☎︎ <span dir="ltr">+962 79 669 8998</span></a>
+        <a class="chip" href="https://maps.app.goo.gl/SmuXQ8Ni4unu9T989" target="_blank" rel="noopener">📍 عمّان — شارع السلام، بجانب كاوزاكي</a>
+        <span class="chip" aria-label="أوقات الدوام">⏰ 10:00 صباحاً – 8:00 مساءً</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="section" role="main" aria-labelledby="invHeading">
+    <div class="container">
+      <h1 id="invHeading">القائمة المتاحة</h1>
+      <p class="lead">شبكة بطاقات — انقر/اضغط على البطاقة لعرض الصور والمواصفات.</p>
+
+      <!-- الفلاتر والبحث -->
+      <div style="margin:1.5rem 0">
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center">
+          <!-- فلتر السعر (Slider) -->
+          <div style="display:flex;flex-direction:column;gap:.3rem">
+            <label for="priceSlider" style="font-size:.9rem;font-weight:600;color:var(--heading)">السعر:</label>
+            <div style="display:flex;align-items:center;gap:1rem">
+              <span id="priceMin" style="font-size:.8rem;color:var(--muted);min-width:35px">0</span>
+              <div style="flex:1;position:relative">
+                <input
+                  type="range"
+                  id="priceSlider"
+                  min="0"
+                  max="70000"
+                  step="1000"
+                  value="70000"
+                  style="width:100%;height:6px;border-radius:3px;background:var(--border);outline:none;-webkit-appearance:none;appearance:none"
+                >
+                <div id="priceValue" style="position:absolute;top:-25px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:2px 8px;border-radius:4px;font-size:.8rem;white-space:nowrap">
+                  70,000 دينار
+                </div>
+              </div>
+              <span id="priceMax" style="font-size:.8rem;color:var(--muted);min-width:35px">70k</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted)">
+              <span>0 دينار</span>
+              <span>70,000 دينار</span>
+            </div>
+          </div>
+
+          <!-- فلتر الموديل -->
+          <div style="display:flex;flex-direction:column;gap:.3rem">
+            <label for="yearFilter" style="font-size:.9rem;font-weight:600;color:var(--heading)">الموديل:</label>
+            <select id="yearFilter" style="padding:.6rem 1rem;border:1px solid var(--border);border-radius:8px;font-size:.9rem;background:#fff;min-width:120px">
+              <option value="">جميع السنوات</option>
+              <option value="2022">2022</option>
+              <option value="2021">2021</option>
+              <option value="2020">2020</option>
+              <option value="2019">2019</option>
+              <option value="2018">2018</option>
+              <option value="2017">2017</option>
+            </select>
+          </div>
+
+          <!-- البحث -->
+          <div style="display:flex;flex-direction:column;gap:.3rem">
+            <label for="searchInput" style="font-size:.9rem;font-weight:600;color:var(--heading)">البحث:</label>
+            <div style="position:relative">
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="ابحث عن سيارة..."
+                aria-label="البحث في السيارات"
+                style="padding:.6rem 1rem;padding-left:2.5rem;border:1px solid var(--border);border-radius:8px;font-size:.9rem;background:#fff;min-width:200px"
+              >
+              <span style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1rem">🔍</span>
+            </div>
+          </div>
+
+          <!-- زر إعادة تعيين -->
+          <button id="resetFilters" style="padding:.6rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--accent);color:#fff;font-size:.9rem;cursor:pointer;transition:background .2s ease">
+            إعادة تعيين
+          </button>
+        </div>
+
+        <div id="filterResults" style="margin-top:.8rem;font-size:.9rem;color:var(--muted);font-weight:600"></div>
+      </div>
+
+      <div id="grid" class="grid-cards" aria-live="polite"></div>
+    </div>
+  </main>
+
+  <div id="modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+    <div class="dialog">
+      <header>
+        <strong id="modalTitle">تفاصيل السيارة</strong>
+        <button class="btn" id="closeModal" aria-label="إغلاق">✕</button>
+      </header>
+      <div class="content">
+        <div class="carousel" aria-roledescription="carousel">
+          <button class="ctrl prev" id="prevSlide" aria-label="السابق">‹</button>
+          <div class="frame">
+            <img id="carouselImg" alt="صورة سيارة" decoding="async" loading="lazy" />
+          </div>
+          <button class="ctrl next" id="nextSlide" aria-label="التالي">›</button>
+        </div>
+        <div id="modalDesc" class="specs" aria-live="polite"></div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+          <a class="btn primary" id="callNow" href="tel:+962700000000">اتصل الآن</a>
+          <a class="btn" id="openInstagram" href="https://instagram.com/showroom_demo" target="_blank" rel="noopener">رسالة إنستغرام</a>
+          <span id="modalStatus" class="lead" role="status" aria-live="polite"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer role="contentinfo">
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
+      <div>© <span id="year"></span> معرض السيارات</div>
+      <div style="display:flex;gap:.6rem;align-items:center">
+        <a class="chip" href="tel:+962700000000">☎︎ +962 70 000 0000</a>
+        <a class="chip" href="https://instagram.com/showroom_demo" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- تحميل إعدادات Supabase -->
+  <script src="config.js"></script>
+  <!-- مكتبة Supabase (UMD) تضع window.supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <script src="cars.js"></script>
+</body>
+</html>
